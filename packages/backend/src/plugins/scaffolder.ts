@@ -19,8 +19,10 @@ import {
   createRouter,
   FilePreparer,
   GithubPreparer,
+  BitbucketPreparer,
   Preparers,
-  GithubPublisher,
+  // GithubPublisher,
+  BitbucketPublisher,
   CreateReactAppTemplater,
   Templaters,
 } from '@backstage/plugin-scaffolder-backend';
@@ -37,13 +39,16 @@ export default async function createPlugin({ logger }: PluginEnvironment) {
 
   const filePreparer = new FilePreparer();
   const githubPreparer = new GithubPreparer();
+  const bitbucketPreparer = new BitbucketPreparer();
   const preparers = new Preparers();
 
   preparers.register('file', filePreparer);
   preparers.register('github', githubPreparer);
+  preparers.register('bitbucket/api', bitbucketPreparer);
 
   const githubClient = new Octokit({ auth: process.env.GITHUB_ACCESS_TOKEN });
-  const publisher = new GithubPublisher({ client: githubClient });
+  // const githubPublisher = new GithubPublisher({ client: githubClient });
+  const publisher = new BitbucketPublisher({ client: githubClient });
 
   const dockerClient = new Docker();
   return await createRouter({
